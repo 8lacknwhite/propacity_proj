@@ -2,10 +2,22 @@ import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { CityContext } from "../context/Citycontext";
 
+interface WeatherData {
+  location: {
+    name: string;
+  };
+  current: {
+    temp_c: number;
+    condition: {
+      text: string;
+    };
+  };
+}
+
 function Weather({ city = "London" }) {
   const { selectedCity } = useContext(CityContext); // Get the selected city from context
-  const [weather, setWeather] = useState(null);
-  const [error, setError] = useState(null);
+  const [weather, setWeather] = useState<WeatherData | null>(null); // Define weather state with the correct type
+  const [error, setError] = useState<Error | null>(null);
 
   // Dynamically construct the API URL based on the selected city or default to "London"
   const cityQuery = selectedCity || city;
@@ -14,10 +26,10 @@ function Weather({ city = "London" }) {
   useEffect(() => {
     const fetchWeatherData = async () => {
       try {
-        const response = await axios.get(API_WEATHER);
+        const response = await axios.get<WeatherData>(API_WEATHER); // Specify the type of data returned
         setWeather(response.data);
       } catch (err) {
-        setError(err);
+        setError(err as Error); // Cast error to Error type
       }
     };
 

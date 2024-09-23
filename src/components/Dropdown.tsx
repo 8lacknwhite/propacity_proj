@@ -10,11 +10,11 @@ function Dropdown() {
     city.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleSearchChange = (event) => {
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
   };
 
-  const handleOptionClick = (cityName) => {
+  const handleOptionClick = (cityName: string) => {
     setSelectedCity(cityName); // Update the selected city in the context
     setSearchTerm(cityName); // Optionally update the search term
   };

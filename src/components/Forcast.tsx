@@ -1,12 +1,36 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { CityContext } from "../context/Citycontext";
 import Dropdown from "./Dropdown";
 
+// Define the structure of the forecast data
+interface ForecastData {
+  current: {
+    temp_c: number;
+    condition: {
+      text: string;
+      icon: string;
+    };
+  };
+  forecast: {
+    forecastday: Array<{
+      date: string;
+      day: {
+        maxtemp_c: number;
+        mintemp_c: number;
+        condition: {
+          text: string;
+          icon: string;
+        };
+      };
+    }>;
+  };
+}
+
 function Forecast({ city = "London", days = 1 }) {
   const { selectedCity } = useContext(CityContext); // Get the selected city from context
-  const [error, setError] = useState(null);
-  const [forecast, setForecast] = useState(null);
+  const [error, setError] = useState<Error | null>(null);
+  const [forecast, setForecast] = useState<ForecastData | null>(null);
 
   // Dynamically construct the API URL based on the selected city or the default city
   const cityQuery = selectedCity || city;
@@ -18,7 +42,7 @@ function Forecast({ city = "London", days = 1 }) {
         const response = await axios.get(API_FORECAST);
         setForecast(response.data);
       } catch (err) {
-        setError(err);
+        setError(err as Error);
       }
     };
 
@@ -33,7 +57,7 @@ function Forecast({ city = "London", days = 1 }) {
     return <div>Loading...</div>;
   }
 
-  if (days == 1) {
+  if (days === 1) {
     return (
       <div>
         <Dropdown />
@@ -51,7 +75,6 @@ function Forecast({ city = "London", days = 1 }) {
     return (
       <div style={{ display: "flex" }}>
         {forecast &&
-          forecast.forecast &&
           forecast.forecast.forecastday &&
           forecast.forecast.forecastday
             .slice(0, 7)
