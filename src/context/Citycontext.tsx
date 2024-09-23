@@ -1,5 +1,4 @@
-// Citycontext.tsx
-import React, { createContext, useState } from "react";
+import React, { createContext, useState, ReactNode } from "react";
 
 // Create the context
 export const CityContext = createContext({
@@ -8,7 +7,9 @@ export const CityContext = createContext({
 });
 
 // Create the provider component
-export const CityProvider: React.FC = ({ children }) => {
+export const CityProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
   const [selectedCity, setSelectedCity] = useState("");
 
   return (
